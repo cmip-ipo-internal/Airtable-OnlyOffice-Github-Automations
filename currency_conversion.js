@@ -13,7 +13,9 @@ Before usage the
     - amount, 
     - output field 
     - and last_updated 
-columns need to be present, and correctly referenced within this script
+columns need to be present, and correctly referenced within this script.
+
+** output_field and last_updates must NOT be the same as the currency and amount columns **
 
 Usage and ammendments to this script are permitted, but correct reference of the origin (this) and any changes are required. 
 
