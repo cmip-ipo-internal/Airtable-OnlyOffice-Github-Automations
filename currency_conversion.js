@@ -2,8 +2,7 @@ console.log(`Hello, ${base.name}!`);
 
 /* 
 
-Airtable template made for the CMIP-IPO (https://wcrp-cmip.org/)
-
+Airtable template made for the CMIP-IPO
 All queries: contact the IPO Technical Officer: 
 Daniel Ellis
 daniel.ellis -@- ext.esa.int
@@ -14,9 +13,9 @@ Before usage the
     - amount, 
     - output field 
     - and last_updated 
-columns need to be present, and correctly referenced within this script!
+columns need to be present, and correctly referenced within this script
 
-Usage and ammendments to this script are permitted, but reference of the origin (this) document and a changelog are required. 
+Usage and ammendments to this script are permitted, but correct reference of the origin (this) and any changes are required. 
 
 */
 
@@ -61,6 +60,9 @@ async function get_rate(currency){
 // retrieve the table
 let result = await table.selectRecordsAsync({fields: [currency,amount]});
 
+let inputConfig = input.config();
+console.log(inputConfig);
+
 const now = new Date().toISOString().split('T')[0];
 
 
@@ -78,7 +80,7 @@ for (let record of result.records) {
     let updates = {
         id: record.id,
         fields: {
-            [amount]: amount_value * conversion_value,
+            [output_field]: amount_value * conversion_value,
             [last_updated]: `Conversion (${currency_value}): ${conversion_value} @ ${now}`
         }
     };
