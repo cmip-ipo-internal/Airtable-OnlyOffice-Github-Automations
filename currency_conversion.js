@@ -17,6 +17,8 @@ columns need to be present, and correctly referenced within this script.
 
 ** output_field and last_updates must NOT be the same as the currency and amount columns **
 
+** when setting up the automation, make sure not to run the script on updates to the the 'output field' or 'last_updated' columns as this will create an expoential number of script runs ***
+
 Usage and ammendments to this script are permitted, but correct reference of the origin (this) and any changes are required. 
 
 */
