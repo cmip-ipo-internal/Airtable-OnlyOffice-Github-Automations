@@ -55,11 +55,10 @@ while ((match = keyValuePattern.exec(inputCode)) !== null) {
 
 //////////////////////////////
 // Log the resulting JSON object
-// Log the resulting JSON object
-console.log(result);
 
-if (!Array.isArray(result['Assign'])) result['Assign'] = [result['Assign']]
-if (!Array.isArray(result['Label'])) result['Label'] = result['Label'].split('- ').filter(d=>d)
+
+result['Assign'] = result['Assign'].split('- ')
+result['Label'] = result['Label'].split('- ').filter(d=>d)
 
 result['Assign'] = result['Assign'].map(d=>maintainors[d]).filter(d=>d)
 
@@ -71,7 +70,7 @@ template = `
 # 🚀 ${result['Title']} 🚀
 ---
 
-**Issuer**: ${'@'+result['Github'] || result['Email'.split('@')[0]]}
+**Issuer**: ${'@'+ (result['Github'] || result['Email'].split('@')[0])}
 
 **Related Issues**:
 ${JSON.stringify(result['Related'])||''}
@@ -106,6 +105,7 @@ ${JSON.stringify(result['Expected'])||'none'}
   if (result['Assign']) requestBody['Assign'] = result['Assign']
 
 
+  console.log(result)
   try {
     const response = await fetch(url, {
       method: 'POST',
