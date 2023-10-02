@@ -13,11 +13,7 @@ Before usage the
     - amount, 
     - output field 
     - and last_updated 
-columns need to be present, and correctly referenced within this script.
-
-** output_field and last_updates must NOT be the same as the currency and amount columns **
-
-** when setting up the automation, make sure not to run the script on updates to the the 'output field' or 'last_updated' columns as this will create an expoential number of script runs ***
+columns need to be present, and correctly referenced within this script
 
 Usage and ammendments to this script are permitted, but correct reference of the origin (this) and any changes are required. 
 
@@ -27,15 +23,15 @@ Usage and ammendments to this script are permitted, but correct reference of the
 ////////////////////////////////////////////////////
 // Configuration options to change!
 ////////////////////////////////////////////////////
-const tablename = 'TEST table for Daniel';
+const tablename = 'Per Diem';
 const output_currency = 'EUR'
 // fileds
 const currency = 'Currency';
 const amount = 'Per Diem amount';
 const output_field = 'Per Diem in Euros';
-const last_updated = 'updated';
+const last_updated = 'Last updated';
 ////////////////////////////////////////////////////
-
+const apiKey = '<need to enter key here>'
 
 let table = base.getTable(tablename);
 let conversions = {};
@@ -43,13 +39,24 @@ let conversions = {};
 async function get_rate(currency){
     /* A function to get the latest conversion rate */
 
+    const url = `https://api.apilayer.com/exchangerates_data/latest?base=${currency}`;
+    
+    
     if (conversions.hasOwnProperty(currency)){
         return conversions[currency]
     }else{
 
         // Fetch conversion rate from API - you could change this to any API you want
-        let apiResponse = await fetch(`https://api.exchangerate.host/latest?base=${currency}`);
+        let apiResponse = await fetch(url,{
+            method: 'GET',
+            headers: {
+                'apikey': apiKey,
+            }});
         let data = await apiResponse.json();
+        console.log(data)
+
+
+        console.log(data)
         let conversionRate = data.rates[output_currency];
 
         conversions[currency] = conversionRate || -1
@@ -57,9 +64,7 @@ async function get_rate(currency){
         return conversions[currency]
     }
 
-
 }
-
 
 // retrieve the table
 let result = await table.selectRecordsAsync({fields: [currency,amount]});
@@ -80,6 +85,7 @@ for (let record of result.records) {
     let amount_value = record.getCellValue(amount);
 
     let conversion_value = await get_rate(currency_value);
+
 
     let updates = {
         id: record.id,
