@@ -94,7 +94,7 @@ jobs:
 ```yaml
 ## Run a Python Script 
   - name: Write the issue to a file
-    run: python .github/workflows/read_issue.py
+    run: python read_issue.py
     working-directory: .github/workflows/
     env:
       PYTHON_SCRIPT_OUTPUT: ${{ steps.run-python-script.outputs.stdout }}
