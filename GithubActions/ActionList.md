@@ -37,6 +37,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v2
 
+```
 ### Config your gi credentials
 ```
       - name: Set up Git
