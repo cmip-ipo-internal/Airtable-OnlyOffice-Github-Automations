@@ -93,11 +93,13 @@ jobs:
 
 ```yaml
 ## Run a Python Script 
-      - name: Write the issue to a file
-        run: python read_issue.py 
-        working-directory: .github/workflows/
-        env:
-            PYTHON_SCRIPT_OUTPUT: ${{ steps.run-python-script.outputs.stdout }}
+  - name: Write the issue to a file
+    run: python .github/workflows/read_issue.py
+    working-directory: .github/workflows/
+    env:
+      PYTHON_SCRIPT_OUTPUT: ${{ steps.run-python-script.outputs.stdout }}
+      PYTHON_SCRIPT_ERROR: ${{ env.PYTHON_SCRIPT_ERROR }}
+    continue-on-error: true
 ```
 
 ### Git Operations
