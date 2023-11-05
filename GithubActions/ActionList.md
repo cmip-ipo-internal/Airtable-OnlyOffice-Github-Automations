@@ -96,6 +96,8 @@ jobs:
       - name: Write the issue to a file
         run: python read_issue.py 
         working-directory: .github/workflows/
+        env:
+            PYTHON_SCRIPT_OUTPUT: ${{ steps.run-python-script.outputs.stdout }}
 ```
 
 ### Git Operations
