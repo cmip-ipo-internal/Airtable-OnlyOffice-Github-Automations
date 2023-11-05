@@ -100,6 +100,12 @@ jobs:
       PYTHON_SCRIPT_OUTPUT: ${{ steps.run-python-script.outputs.stdout }}
       PYTHON_SCRIPT_ERROR: ${{ env.PYTHON_SCRIPT_ERROR }}
     continue-on-error: true
+
+  - name: Print output
+    run: |
+      echo "::set-output name=PYSTD::$PYTHON_SCRIPT_OUTPUT"
+      echo "::set-output name=PYERR::$PYTHON_SCRIPT_ERROR"
+
 ```
 
 ### Git Operations
