@@ -18,5 +18,7 @@ _*** see the README.md files in each of the respective directories. ***_
 ### Airtable Scripts
 Scripts used in the automation of airtable automations. 
 
+Remember to include varaibles in the script! <a href='https://scribehow.com/shared/How_to_Add_an_Input_Variable_in_Airtable__XMl_GzGrRTOJam2oDuGYUA'> scribe </a>
+
 ### Only Office API lbirary 
 Scripts to intergrate and update elements of onlyoffice.
