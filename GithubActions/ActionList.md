@@ -98,7 +98,7 @@ jobs:
     working-directory: .github/workflows/
     env:
       PYTHON_SCRIPT_OUTPUT: ${{ steps.run-python-script.outputs.stdout }}
-      PYTHON_SCRIPT_ERROR: ${{ env.PYTHON_SCRIPT_ERROR }}
+      PYTHON_SCRIPT_ERROR: ${{ steps.run-python-script.outputs.stderr }}
     continue-on-error: true
 
   - name: Print output
