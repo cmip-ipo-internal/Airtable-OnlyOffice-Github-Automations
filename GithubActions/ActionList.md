@@ -177,3 +177,14 @@ jobs:
         run: |
           # Your dependent job commands here
 ```
+
+```
+    - name: Print Result
+      run: |
+        if [[ "${{ contains(github.event.issue.title, 'Request to add Institution:') }}" == "true" ]]; then
+          echo "Issue title contains 'Request to add Institution:'. Perform your desired actions here."
+        else
+          echo "Issue title does not contain 'Request to add Institution:'. Workflow will be skipped."
+          exit 0
+        fi
+```
