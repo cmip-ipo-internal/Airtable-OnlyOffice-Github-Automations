@@ -1,0 +1,121 @@
+
+// GitHub repository information
+const owner = 'CMIP-Data-Request';
+const repo = 'Harmonised-Consultation-Phase-1';
+const githubToken = ''; // Replace with your GitHub personal access token
+const maintainors = { 'Daniel Ellis': 'wolfiex', };
+
+const themedict = {
+
+}
+
+const ghuser = {
+   
+}
+
+
+//////////////////////////////
+// gets the data from form in XML, then reads the values. 
+//////////////////////////////
+
+let inputConfig = input.config();
+// set id from inputs on LHS
+let id = input.get("id");
+
+const table = base.getTable("Comments")
+const record = await table.selectRecordsAsync({id:id});
+console.warn(record)
+
+result = {}
+if (record) {
+
+    // Loop through all fields of the record
+    for (let field of table.fields) {
+        let fieldName = field.name;
+
+        let fieldValue = record.records[0].getCellValue(field.id);
+
+        // // Output the field name and value
+        // console.log(`**${fieldName}**: ${fieldValue}`);
+        result[fieldName] = fieldValue;  
+    }
+} else {
+    console.warn(`No record found with ID ${id}`);
+}
+
+console.warn(result)
+
+
+
+
+
+//////////////////////////////
+// Create tempate 
+//////////////////////////////
+
+
+let template = `
+
+## *Themes:*  ${result['Theme'].map(d=>'\n - '+ d.name)}
+
+## Description
+${result['GitHub Issue description']}
+
+`
+
+
+// if  const url = `https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}`;
+
+let url ;
+
+
+if (result['GitHub Issue number'] && result['GitHub Issue number']!= "undefined"){
+  url = `https://api.github.com/repos/${owner}/${repo}/issues/${result['GitHub Issue number']}`
+}else{
+  url = `https://api.github.com/repos/${owner}/${repo}/issues`
+}
+console.log(url)
+
+const requestBody = {
+  title: `${base.name} - ${result['GitHub Issue title']}`,
+  labels: result['Theme'].map(d=>d.name),
+  body: template,
+  assignees: result['Theme'].map(d=>ghuser[themedict[d.name]]).filter(d=>d)
+}
+
+console.log(requestBody)
+//////////////////////////////
+// Post Issue
+//////////////////////////////
+
+try {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `token ${githubToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  }).then(d=>d.json());
+
+  
+
+  console.log('Response',response);
+
+  //url number
+
+    let updates = {
+        id: id,
+        fields: {
+            ['GitHub Issue URL']: response.html_url,
+            ['GitHub Issue number']: ""+response.number
+        }
+    };
+    console.log(updates)
+
+    await table.updateRecordsAsync([updates]);
+
+} catch (error) {
+  console.error('Error creating GitHub issue:', error);
+}
+
