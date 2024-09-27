@@ -1,0 +1,64 @@
+import requests
+import json
+
+class CMIPOnlyOfficeAPI:
+    def __init__(self, username, password):
+        self.base_url = "https://office.wcrp-cmip.org"
+        self.username = username
+        self.password = password
+        self.token = None
+        
+        self.authenticate()
+
+    def authenticate(self):
+        """Authenticate and retrieve the token."""
+        auth_url = f"{self.base_url}/api/2.0/authentication.json"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "username": self.username,
+            "password": self.password
+        }
+        
+        response = requests.post(auth_url, headers=headers, data=json.dumps(payload))
+        
+
+            # Assuming the token is directly in the response (adjust based on actual response structure)
+
+        self.token = response.json()['response'].get("token")
+        print(f"Authentication successful. Token: {self.token}")
+        assert self.token
+
+        
+    def get_file(self, file_id, version=None):
+        """Get file details using the token."""
+        if not self.token:
+            raise Exception("No token. Please authenticate first.")
+        
+        file_url = f"{self.base_url}/api/2.0/files/file/{file_id}"
+        if version:
+            file_url += f"?version={version}"
+        
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": self.token  # Include token in the header
+        }
+        
+        response = requests.get(file_url, headers=headers)
+        
+        if response.status_code == 200:
+            # print(f"File details: {response.json()}")
+            return response.json()['response']
+        else:
+            print(f"Failed to retrieve file. Status code: {response.status_code}, Response: {response.text}")
+            raise Exception("Failed to retrieve file")
+    def who(self,file_id):
+        content = self.get_file(file_id)
+        try:
+            return f'"{content["title"]}" - {content["contentLength"]} - Last modified on {content["updated"].split(".")[0].replace("T"," ")} by {content["updatedBy"]["displayName"]}'
+        except Exception as e:
+            print(e)
+            print(content)
+            return False
